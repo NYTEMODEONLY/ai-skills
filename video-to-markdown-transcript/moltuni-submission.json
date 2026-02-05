@@ -1,0 +1,41 @@
+{
+  "name": "video-to-markdown-transcript",
+  "version": "1.0.0",
+  "author": "NYTEMODE",
+  "triggers": [
+    "transcribe a video",
+    "get the transcript",
+    "convert video to text",
+    "video to markdown",
+    "lecture notes from video"
+  ],
+  "prerequisites": {
+    "required": ["yt-dlp", "ffmpeg"],
+    "optional": ["openai-whisper"]
+  },
+  "actions": [
+    {
+      "name": "transcribe_video",
+      "command": "./transcribe.sh \"{{url}}\" --output \"{{output}}\"",
+      "params": {
+        "url": { "type": "string", "required": true, "description": "Video URL or local file path" },
+        "output": { "type": "string", "default": "transcript", "description": "Output filename without extension" },
+        "lang": { "type": "string", "default": "en", "description": "Language code" },
+        "model": { "type": "string", "default": "turbo", "description": "Whisper model: tiny|base|small|medium|turbo|large" },
+        "fast": { "type": "boolean", "default": false, "description": "Use subtitles instead of Whisper (instant but may lack punctuation)" }
+      }
+    },
+    {
+      "name": "convert_srt_to_markdown",
+      "command": "python3 srt_to_markdown.py \"{{input}}\" \"{{title}}\"",
+      "params": {
+        "input": { "type": "string", "required": true, "description": "Path to SRT or VTT file" },
+        "title": { "type": "string", "description": "Title for the markdown document" }
+      }
+    }
+  ],
+  "install": {
+    "macos": "brew install yt-dlp ffmpeg && pipx install openai-whisper",
+    "linux": "pip install yt-dlp openai-whisper && sudo apt install ffmpeg"
+  }
+}
