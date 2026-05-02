@@ -1,0 +1,4 @@
+interface:
+  display_name: "xAI X Link Reader"
+  short_description: "Resolve X.com links through Grok search"
+  default_prompt: "Use $xai-x-link-reader to fetch and summarize the X.com link I provide."
