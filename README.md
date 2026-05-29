@@ -8,6 +8,7 @@ Each top-level folder is a standalone skill. The root README documents the full 
 
 | Skill | What It Does | Main Requirements |
 |-------|--------------|-------------------|
+| [app-store-review-audit](./app-store-review-audit) | Audits Apple platform apps before App Review, TestFlight review, or App Store Connect submission | Python 3, optional Xcode/build tooling, Apple policy refresh |
 | [xai-x-link-reader](./xai-x-link-reader) | Resolves X.com/Twitter links through xAI Grok `x_search` tool calling when normal agents are blocked | Python 3.10+, `XAI_API_KEY` |
 | [video-to-markdown-transcript](./video-to-markdown-transcript) | Transcribes videos into clean markdown with a captions-first workflow and Whisper fallback | `yt-dlp`, `ffmpeg`, optional `openai-whisper` |
 
@@ -25,6 +26,7 @@ Skills are reusable knowledge modules that teach AI agents how to perform specif
 
 ```bash
 mkdir -p ~/.codex/skills
+cp -r app-store-review-audit ~/.codex/skills/
 cp -r xai-x-link-reader ~/.codex/skills/
 cp -r video-to-markdown-transcript ~/.codex/skills/
 ```
@@ -33,6 +35,7 @@ cp -r video-to-markdown-transcript ~/.codex/skills/
 
 ```bash
 mkdir -p ~/.claude/skills
+cp -r app-store-review-audit ~/.claude/skills/
 cp -r xai-x-link-reader ~/.claude/skills/
 cp -r video-to-markdown-transcript ~/.claude/skills/
 ```
@@ -43,6 +46,7 @@ Skills are automatically loaded from `~/.openclaw/skills/` or can be synced from
 
 ```bash
 mkdir -p ~/.openclaw/skills
+cp -r app-store-review-audit ~/.openclaw/skills/
 cp -r xai-x-link-reader ~/.openclaw/skills/
 cp -r video-to-markdown-transcript ~/.openclaw/skills/
 ```
@@ -50,6 +54,66 @@ cp -r video-to-markdown-transcript ~/.openclaw/skills/
 ### Manual Usage
 
 Each skill folder contains standalone scripts that can be run directly. See the sections below and each folder README for exact commands.
+
+## app-store-review-audit
+
+Folder: [app-store-review-audit](./app-store-review-audit)
+
+### Purpose
+
+Use `app-store-review-audit` to audit Apple platform apps before App Store Review,
+TestFlight review, or App Store Connect submission. The skill produces a concrete
+readiness verdict, risk register, fix plan, and reviewer-notes draft.
+
+This skill is useful for:
+
+- Preflighting iOS, iPadOS, macOS, watchOS, tvOS, and visionOS apps
+- Preparing App Store metadata, privacy details, review notes, and demo access
+- Finding likely rejection risks around payments, privacy, account deletion,
+  user-generated content, permissions, entitlements, widgets, extensions, and
+  placeholders
+- Responding to App Review rejection feedback with a repo-grounded fix plan
+
+### Requirements
+
+- Python 3 for the bundled scanner
+- Network access when available to refresh official Apple review guidance
+- Optional Xcode command line tools for native Apple build, archive, and simulator checks
+- App Store Connect, payment sandbox, backend, device, or reviewer demo access when those gates are in scope
+
+### Quick Start
+
+```bash
+cd app-store-review-audit
+python3 scripts/audit_app_store.py /path/to/apple-app --output /tmp/app-store-review-audit.md
+```
+
+The scanner is heuristic. Use it as a first pass, then verify against the app,
+repository, App Store Connect, and current Apple policy.
+
+### Audit Output
+
+The final audit should include:
+
+- Verdict: `Ready`, `Conditionally ready`, or `Not ready`
+- Candidate app, platform, version, build, bundle ID, and audit date
+- Policy sources checked with dates
+- Evidence commands and source paths
+- Blockers, high-risk items, unknowns, manual gates, and fix plan
+- Verification matrix and App Store Connect metadata/privacy checklist
+- App Review notes draft
+- Submit/no-submit recommendation
+
+### Files
+
+| File | Purpose |
+|------|---------|
+| `SKILL.md` | Agent-facing trigger conditions and workflow |
+| `README.md` | Human-facing usage documentation |
+| `scripts/audit_app_store.py` | Heuristic scanner and Markdown audit scaffold generator |
+| `references/apple-review-rubric.md` | Audit rubric, source list, search prompts, and artifact template |
+| `agents/openai.yaml` | Codex UI metadata |
+| `LICENSE` | MIT license |
 
 ## xai-x-link-reader
 

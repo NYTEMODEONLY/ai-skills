@@ -1,0 +1,4 @@
+interface:
+  display_name: "App Store Review Audit"
+  short_description: "Audit apps before App Review"
+  default_prompt: "Use $app-store-review-audit to audit this app for App Store Review risk and produce a fix plan."
